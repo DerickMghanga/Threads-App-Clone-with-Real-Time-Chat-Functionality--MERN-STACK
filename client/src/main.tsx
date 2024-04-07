@@ -18,7 +18,7 @@ const styles = {
 
 const config = {
   initialColorMode: "dark",
-  useSystemColorMode: true   //over app colour mode and use the users browser mode
+  useSystemColorMode: true   //overwrite app colour mode and use the users browser mode
 }
 
 const colors = {
