@@ -12,7 +12,7 @@ export default function UserHeader() {
     navigator.clipboard.writeText(currentURL).then(() => {
       // chakra-ui toast functionality
       toast({
-        title: 'Link Copied.',
+        title: 'Profile Link copied!',
         description: "Have fun😊",
         status: 'success',
         duration: 3000,
@@ -70,6 +70,13 @@ export default function UserHeader() {
             </Menu>
           </Box>
         </Flex>
+      </Flex>
+
+      <Flex w='full' >
+        <Flex flex='1' borderBottom='1.5px solid white' justifyContent='center' alignItems='center' pb='3' cursor='pointer'>
+          Threads
+        </Flex>
+        <Flex flex='1'  borderBottom='1.5px solid gray' justifyContent='center' color='gray.light' alignItems='center' pb='3' cursor='pointer'>Replies</Flex>
       </Flex>
     </VStack>
   )
