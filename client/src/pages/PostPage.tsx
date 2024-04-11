@@ -48,6 +48,8 @@ export default function PostPage() {
       <Divider my='4' />
 
       <Comment/>
+      <Comment/>
+      <Comment/>
     </>
   )
 }
