@@ -1,7 +1,7 @@
 import { Box, Flex, Text } from '@chakra-ui/react'
 import {useState} from 'react'
 
-export default function ActionsLogo() {
+export default function ActionsLogo({likes, replies}: {likes: number, replies: number}) {
     const [liked, setLiked] = useState(false)
     return (
         <Flex flexDirection='column'>
@@ -47,11 +47,11 @@ export default function ActionsLogo() {
             </Flex>
 
             <Flex gap={2} alignItems={"center"}>
-                <Text color={"gray.light"} fontSize='sm'> 17 replies
+                <Text color={"gray.light"} fontSize='sm'>{replies} replies
                 </Text>
                 <Box w={0.5} h={0.5} borderRadius={"full"} bg={"gray.light"}></Box>
                 <Text color={"gray.light"} fontSize='sm'>
-                   400 likes
+                   {likes} likes
                 </Text>
             </Flex>
             {/* 

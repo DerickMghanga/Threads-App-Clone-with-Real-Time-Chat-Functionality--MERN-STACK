@@ -3,7 +3,14 @@ import { Link } from "react-router-dom";
 import { BsThreeDots } from 'react-icons/bs'
 import ActionsLogo from "./ActionsLogo";
 
-export default function UserPost() {
+interface userPost {
+    postImg?: string
+    postTitle: string
+    likes: number
+    replies: number
+}
+
+export default function UserPost({ postImg, postTitle, likes, replies }: userPost) {
     return (
         <Link to={`/markzukerburg/post/1`}>
             <Flex gap='3' mb='4' py='5'>
@@ -58,13 +65,18 @@ export default function UserPost() {
                         </Flex>
                     </Flex>
 
-                    <Text fontSize='sm'>This is my first post on Threads</Text>
+                    <Text fontSize='sm'>{postTitle}</Text>
 
-                    <Box overflow='hidden' borderRadius='6' border='1px solid' borderColor='gray.light'>
-                        <Image src="/post1.png" w='full' />
-                    </Box>
+                    {
+                        postImg && (
+                            <Box overflow='hidden' borderRadius='6' border='1px solid' borderColor='gray.light'>
+                                <Image src={postImg} w='full' />
+                            </Box>
+                        )
+                    }
 
-                    <ActionsLogo />
+
+                    <ActionsLogo likes={likes} replies={replies} />
                 </Flex>
             </Flex>
 

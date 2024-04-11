@@ -25,7 +25,7 @@ export default function UserHeader() {
     <VStack gap='4' alignItems='start'>
       <Flex justifyContent='space-between' width='full'>
         <Box>
-          <Text fontWeight='bold' fontSize='2xl' >
+          <Text fontWeight='bold' fontSize={{base: 'xl',md:'2xl' }}>
             Mark Zukerburg
           </Text>
           <Flex gap='2' alignItems='center'>
@@ -39,7 +39,7 @@ export default function UserHeader() {
           <Avatar
             name="Mark Zukerburg"
             src="/zuck-avatar.png"
-            size='xl'
+            size={{base: 'md', md: 'xl'}}
           />
         </Box>
       </Flex>
