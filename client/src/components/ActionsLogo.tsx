@@ -51,7 +51,7 @@ export default function ActionsLogo({likes, replies}: {likes: number, replies: n
                 </Text>
                 <Box w={0.5} h={0.5} borderRadius={"full"} bg={"gray.light"}></Box>
                 <Text color={"gray.light"} fontSize='sm'>
-                   {likes} likes
+                   {liked ? likes + 1 : likes + 0} likes
                 </Text>
             </Flex>
             {/* 
