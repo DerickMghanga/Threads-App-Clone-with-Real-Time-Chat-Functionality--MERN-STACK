@@ -1,14 +1,15 @@
 import User from "../models/userModel"
 import bcrypt from "bcryptjs"
+import generateTokenAndSetCookie from "../utils/helpers/generateTokenAndCookie"
 
-//User register
+//REGISTER USER
 const signUpUser = async (req: any, res: any) => {
     try {
         const { name, email, username, password } = req.body
         const user: any = await User.findOne({ $or: [{ email }, { username }] })
 
         if (user) {
-            return res.status(409).json({message: "User already exists!"})
+            return res.status(409).json({ message: "User already exists!" })
         }
 
         // hash user password
@@ -26,6 +27,8 @@ const signUpUser = async (req: any, res: any) => {
         await newUser.save()
 
         if (newUser) {
+            generateTokenAndSetCookie(newUser._id, res)
+
             return res.status(201).json({
                 _id: newUser._id,
                 name: newUser.name,
@@ -33,7 +36,7 @@ const signUpUser = async (req: any, res: any) => {
                 username: newUser.username
             })
         } else {
-            return res.status(400).json({message: "Invalid User data!"})
+            return res.status(400).json({ message: "Invalid User data!" })
         }
 
     } catch (err: any) {
@@ -42,4 +45,31 @@ const signUpUser = async (req: any, res: any) => {
     }
 }
 
-export { signUpUser }
+//LOG-IN USER
+const logInUser = async (req: any, res: any) => {
+    try {
+        const { username, password } = req.body
+        const user: any = await User.findOne({ username })
+        console.log(user)
+
+        if (!user) return res.status(400).json({ message: "Username doesn't exist!" })
+
+        const isPasswordCorrect: any = await bcrypt.compare(password, user.password)
+        if (!isPasswordCorrect) return res.status(400).json({ message: "Invalid Password!" })
+
+        generateTokenAndSetCookie(user._id, res)  // generate token and set cookie to response
+
+        res.status(200).json({
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            username: user.username
+        })
+
+    } catch (err: any) {
+        res.status(500).json({ message: err.message })
+        console.log("Error on logInUser: ", err.message)
+    }
+}
+
+export { signUpUser, logInUser }
