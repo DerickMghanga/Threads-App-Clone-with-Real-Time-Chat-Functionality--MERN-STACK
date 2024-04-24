@@ -50,12 +50,13 @@ const logInUser = async (req: any, res: any) => {
     try {
         const { username, password } = req.body
         const user: any = await User.findOne({ username })
-        console.log(user)
+        //console.log(user)
 
-        if (!user) return res.status(400).json({ message: "Username doesn't exist!" })
+        //if (!user) return res.status(400).json({ message: "Username doesn't exist!" })
 
-        const isPasswordCorrect: any = await bcrypt.compare(password, user.password)
-        if (!isPasswordCorrect) return res.status(400).json({ message: "Invalid Password!" })
+        const isPasswordCorrect: any = await bcrypt.compare(password, user?.password || "")
+
+        if (!user || !isPasswordCorrect) return res.status(400).json({ message: "Invalid Username or Password!" })
 
         generateTokenAndSetCookie(user._id, res)  // generate token and set cookie to response
 
@@ -72,4 +73,15 @@ const logInUser = async (req: any, res: any) => {
     }
 }
 
-export { signUpUser, logInUser }
+//LOG-OUT USER
+const logOutUser = async (req: any, res: any) => {
+    try {
+        res.cookie('jwt', "", { maxAge: 1 })
+        res.status(200).json({ message: "User logged out successfully!" })
+    } catch (err: any) {
+        res.status(500).json({ message: err.message })
+        console.log("Error on LogOut: ", err.message)
+    }
+}
+
+export { signUpUser, logInUser, logOutUser }
