@@ -74,7 +74,7 @@ const logInUser = async (req: any, res: any) => {
 }
 
 //LOG-OUT USER
-const logOutUser = async (req: any, res: any) => {
+const logOutUser = (req: any, res: any) => {
     try {
         res.cookie('jwt', "", { maxAge: 1 })
         res.status(200).json({ message: "User logged out successfully!" })
@@ -84,4 +84,40 @@ const logOutUser = async (req: any, res: any) => {
     }
 }
 
-export { signUpUser, logInUser, logOutUser }
+//FOLLOW AND UN-FOLLOW USER
+const followUnFollowUser = async (req: any, res: any) => {
+    try {
+        const { id } = req.params  // id from url params
+        const userToModify = await User.findById(id)  // user to modify (either follow or unfollow)
+        const currentUser = await User.findById(req.user._id)
+
+        if (id === req.user._id) return res.status(400).json({ message: "You can follow/unfollow yourself!" })
+
+        if (!userToModify || !currentUser) return res.status(400).json({ message: "User Not Found!" })
+
+        //check if the logged-in User is following the user
+        const isFollowing = currentUser.following.includes(id)
+
+        if (isFollowing) {
+            // >> UNFOLLOW USER
+            // remove id from Logged-in-user Following array 
+            await User.findByIdAndUpdate(req.user._id, { $pull: { following: id } })
+
+            // Remove logged-user id from UserToModify Followers array
+            await User.findByIdAndUpdate(id, { $pull: { followers: req.user._id } })
+        } else {
+            // >> FOLLOW USER
+            // Add id to Logged-in-user Following array
+            await User.findByIdAndUpdate(req.user._id, { $push: { following: id } })
+
+             // Add logged-user id to UserToModify Followers array
+             await User.findByIdAndUpdate(id, { $push: { followers: req.user._id } })
+        }
+
+    } catch (err: any) {
+        res.status(500).json({ message: err.message })
+        console.log("Error on Follow/UnFollow User: ", err.message)
+    }
+}
+
+export { signUpUser, logInUser, logOutUser, followUnFollowUser }
