@@ -105,13 +105,17 @@ const followUnFollowUser = async (req: any, res: any) => {
 
             // Remove logged-user id from UserToModify Followers array
             await User.findByIdAndUpdate(id, { $pull: { followers: req.user._id } })
+
+            return res.status(200).json({ message: "User UnFollowed successfully!" })
         } else {
             // >> FOLLOW USER
             // Add id to Logged-in-user Following array
             await User.findByIdAndUpdate(req.user._id, { $push: { following: id } })
 
-             // Add logged-user id to UserToModify Followers array
-             await User.findByIdAndUpdate(id, { $push: { followers: req.user._id } })
+            // Add logged-user id to UserToModify Followers array
+            await User.findByIdAndUpdate(id, { $push: { followers: req.user._id } })
+
+            res.status(200).json({ message: "User Followed successfully!" })
         }
 
     } catch (err: any) {
@@ -120,4 +124,36 @@ const followUnFollowUser = async (req: any, res: any) => {
     }
 }
 
-export { signUpUser, logInUser, logOutUser, followUnFollowUser }
+//UPDATE USER DETAILS
+const updateUser = async (req: any, res: any) => {
+    const { name, email, username, password, profilePic, bio } = req.body
+    const userId = req.user._id
+
+    try {
+        let user = await User.findById(userId)
+
+        if (!user) return res.status(400).json({ message: "User not found!" })
+
+        if (password) {
+            const salt = await bcrypt.genSalt(10)
+            const hashedPassword = await bcrypt.hash(password, salt)
+
+            user.password = hashedPassword
+        }
+
+        user.name = name || user.name
+        user.email = email || user.email
+        user.username = username || user.username
+        user.profilePic = profilePic || user.profilePic
+        user.bio = bio || user.bio
+
+        const updatedUser = await user.save()
+
+        res.status(200).json({message: "Profile updated successfully!", user: updatedUser})
+    } catch (err: any) {
+        res.status(500).json({ message: err.message })
+        console.log("Error on Update User: ", err.message)
+    }
+}
+
+export { signUpUser, logInUser, logOutUser, followUnFollowUser, updateUser }
