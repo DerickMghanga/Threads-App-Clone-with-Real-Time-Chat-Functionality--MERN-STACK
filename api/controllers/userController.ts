@@ -127,7 +127,7 @@ const followUnFollowUser = async (req: any, res: any) => {
 //UPDATE USER DETAILS
 const updateUser = async (req: any, res: any) => {
     const { name, email, username, password, profilePic, bio } = req.body
-    const userId = req.user._id
+    const userId = req.user._id   // data from protectRoute middleware
 
     try {
         let user = await User.findById(userId)

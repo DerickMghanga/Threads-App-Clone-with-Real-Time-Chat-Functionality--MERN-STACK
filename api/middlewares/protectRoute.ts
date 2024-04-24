@@ -10,6 +10,7 @@ const protectRoute = async (req: any, res: any, next: any) => {
         const decoded: any = jwt.verify(token, process.env.JWT_SECRET!) // get the decoded data from token
 
         const user = await User.findById(decoded.id).select("-password")  // Logged-in User details
+        //NB: Next time save full User details during token creation to reduce database calls for fast API response
 
         req.user = user // add to request body
 
