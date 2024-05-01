@@ -91,7 +91,7 @@ const followUnFollowUser = async (req: any, res: any) => {
         const userToModify = await User.findById(id)  // user to modify (either follow or unfollow)
         const currentUser = await User.findById(req.user._id)
 
-        if (id === req.user._id) return res.status(400).json({ message: "You can follow/unfollow yourself!" })
+        if (id === req.user._id.toString()) return res.status(400).json({ message: "You can't follow/unfollow yourself!" })
 
         if (!userToModify || !currentUser) return res.status(400).json({ message: "User Not Found!" })
 
@@ -149,11 +149,26 @@ const updateUser = async (req: any, res: any) => {
 
         const updatedUser = await user.save()
 
-        res.status(200).json({message: "Profile updated successfully!", user: updatedUser})
+        res.status(200).json({ message: "Profile updated successfully!", user: updatedUser })
     } catch (err: any) {
         res.status(500).json({ message: err.message })
         console.log("Error on Update User: ", err.message)
     }
 }
 
-export { signUpUser, logInUser, logOutUser, followUnFollowUser, updateUser }
+//GET USER PROFILE DETAILS
+const getProfile = async (req: any, res: any) => {
+    const { username } = req.params
+
+    try {
+        const user = await User.findOne({ username }).select('-password').select('-updatedAt')
+        if (!user) return res.status(400).json({ message: "User not found!" })
+
+        res.status(200).json(user)
+    } catch (err: any) {
+        res.status(500).json({ message: err.message })
+        console.log("Error on getProfile: ", err.message)
+    }
+}
+
+export { signUpUser, logInUser, logOutUser, followUnFollowUser, updateUser, getProfile }

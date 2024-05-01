@@ -11,7 +11,7 @@ const connectDb = () => {
 
         console.log(`MongoDB Connected!`)
     } catch (error: any) {
-        console.error(`Error: ${error.message}`)
+        console.error(`Error on MongoDB Connection: ${error.message}`)
         process.exit(1)
     }
 }
