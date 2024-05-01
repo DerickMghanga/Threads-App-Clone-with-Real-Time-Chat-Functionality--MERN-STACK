@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser'
 import cors from 'cors'
 
 import userRoutes from './routes/userRoutes'
+import postRoutes from './routes/postRoutes'
 
 connectDb()
 
@@ -20,6 +21,7 @@ app.use(cookieParser())
 
 //Routes
 app.use('/api/users', userRoutes)
+app.use('/api/posts', postRoutes)
 
 
 app.listen(PORT, () => {
