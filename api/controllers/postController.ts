@@ -1,6 +1,5 @@
 import Post from "../models/postModel"
 import User from "../models/userModel"
-import express, { Request, Response } from "express";
 
 
 //CREATE NEW POST
@@ -36,8 +35,42 @@ const createPost = async (req: any, res: any) => {
 }
 
 //GET SPECIFIC POST
-const getPost = async (req:Request, res:Response) => {
+const getPost = async (req: any, res: any) => {
+    try {
+        const post = await Post.findById(req.params.id)
 
+        if (!post) {
+            return res.status(404).json({ message: "Post not found!" })
+        }
+
+        res.status(200).json({ post })
+    } catch (err: any) {
+        res.status(500).json({ message: err.message })
+        console.log("Error on GET Post: ", err.message)
+    }
 }
 
-export { createPost, getPost }
+//DELETE POST
+const deletePost = async (req: any, res: any) => {
+    try {
+        const post: any = await Post.findById(req.params.id)
+
+        if (!post) {
+            return res.status(404).json({ message: "Post not found!" })
+        }
+        
+        if (post.postedBy.toString() !== req.user._id.toString()) {
+            return res.status(401).json({ message: "Unauthorized to delete this post!" })
+        }
+
+        await Post.findByIdAndDelete(req.params.id)
+
+        res.status(200).json({ message: "Post deleted successfully!" })
+
+    } catch (err: any) {
+        res.status(500).json({ message: err.message })
+        console.log("Error on DELETE Post: ", err.message)
+    }
+}
+
+export { createPost, getPost, deletePost }

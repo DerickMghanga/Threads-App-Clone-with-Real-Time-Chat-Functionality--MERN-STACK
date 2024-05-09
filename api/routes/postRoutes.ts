@@ -1,10 +1,11 @@
 import express from "express"
-import { createPost, getPost } from "../controllers/postController"
+import { createPost, getPost, deletePost } from "../controllers/postController"
 import protectRoute from "../middlewares/protectRoute"
 
 const router = express.Router()
 
-router.get('/create', protectRoute, getPost)
+router.get('/:id', getPost)
 router.post('/create', protectRoute, createPost)
+router.delete('/:id', protectRoute, deletePost)
 
 export default router
