@@ -90,13 +90,13 @@ const likeUnlikePost = async (req: any, res: any) => {
         if (userLikedPost) {
             //UNLIKE POST
             await Post.updateOne({ _id: postId }, { $pull: { likes: userId } })
-            return res.status(200).json({message: "Post Unliked Successfully!"})
+            return res.status(200).json({ message: "Post Unliked Successfully!" })
         } else {
             //LIKE POST
             post.likes.push(userId)
 
             await post.save()
-            return res.status(200).json({message: "Post Liked Successfully!"})
+            return res.status(200).json({ message: "Post Liked Successfully!" })
         }
 
     } catch (err: any) {
@@ -105,4 +105,30 @@ const likeUnlikePost = async (req: any, res: any) => {
     }
 }
 
-export { createPost, getPost, deletePost, likeUnlikePost }
+//REPLY TO POST
+const replyToPost = async (req: any, res: any) => {
+    try {
+        const { text } = req.body
+        const postId = req.params.id
+        const userId = req.user._id
+        const userProfilePic = req.user.userProfilePic
+        const username = req.user.username
+
+        if (!text) return res.status(400).json({ message: "Text field is required!" }) //cant post an empty post
+
+        const post = await Post.findById(postId)
+        if (!post) return res.status(404).json({ message: "Post Not found!" })
+
+        const newReply = { userId, text, userProfilePic, username }
+
+        post.replies.push(newReply)
+        await post.save()
+
+        res.status(200).json({ message: "Reply added successfully!", post })
+    } catch (err: any) {
+        res.status(500).json({ message: err.message })
+        console.log("Error on REPLY TO POST: ", err.message)
+    }
+}
+
+export { createPost, getPost, deletePost, likeUnlikePost, replyToPost }
