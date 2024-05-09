@@ -1,5 +1,6 @@
 import Post from "../models/postModel"
 import User from "../models/userModel"
+import express, { Request, Response } from "express";
 
 
 //CREATE NEW POST
@@ -34,4 +35,9 @@ const createPost = async (req: any, res: any) => {
     }
 }
 
-export { createPost }
+//GET SPECIFIC POST
+const getPost = async (req:Request, res:Response) => {
+
+}
+
+export { createPost, getPost }
