@@ -1,9 +1,10 @@
 import express from "express"
-import { createPost, getPost, deletePost, likeUnlikePost, replyToPost } from "../controllers/postController"
+import { createPost, getPost, deletePost, likeUnlikePost, replyToPost, getFeedPosts } from "../controllers/postController"
 import protectRoute from "../middlewares/protectRoute"
 
 const router = express.Router()
 
+router.get('/feed', protectRoute, getFeedPosts)
 router.get('/:id', getPost)
 router.post('/create', protectRoute, createPost)
 router.delete('/:id', protectRoute, deletePost)
