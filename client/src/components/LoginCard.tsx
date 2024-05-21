@@ -15,9 +15,13 @@ import {
     useColorModeValue
 } from '@chakra-ui/react';
 import { useState } from 'react';
+import { useSetRecoilState } from 'recoil';
+import authScreenAtom from '../atoms/authAtom';
 
 export default function LoginCard() {
     const [showPassword, setShowPassword] = useState(false);
+
+    const setAuthScreen = useSetRecoilState(authScreenAtom)
 
     return (
         <Flex
@@ -47,11 +51,7 @@ export default function LoginCard() {
                             <FormLabel >Username</FormLabel>
                             <Input type="text" />
                         </FormControl>
-
-                        <FormControl isRequired>
-                            <FormLabel>Email address</FormLabel>
-                            <Input type="email" />
-                        </FormControl>
+                        
                         <FormControl isRequired>
                             <FormLabel>Password</FormLabel>
                             <InputGroup>
@@ -80,7 +80,9 @@ export default function LoginCard() {
                             </Button>
                         </Stack>
                         <Stack pt={6}>
-                            <Text align={'center'}>
+                            <Text align={'center'}
+                            onClick={()=> setAuthScreen('signup')}
+                            >
                                 Don&apos;t have an account ? <Link color={'blue.400'}>Sign up</Link>
                             </Text>
                         </Stack>
