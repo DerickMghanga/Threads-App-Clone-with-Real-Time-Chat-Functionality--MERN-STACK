@@ -14,6 +14,7 @@ import {
     Stack,
     Text,
     useColorModeValue,
+    useToast,
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { useSetRecoilState } from 'recoil';
@@ -32,6 +33,8 @@ export default function SignupCard() {
 
     const setAuthScreen = useSetRecoilState(authScreenAtom)
 
+    const toast = useToast()
+
 
     const handleSignUp = async () => {
         try {
@@ -44,6 +47,15 @@ export default function SignupCard() {
             })
             const data = await res.json()
             console.log(data)
+
+            if (data.error) {
+                toast({
+                    title: "Error",
+                    description: data.error,
+                    duration: 3000,
+                    isClosable: true
+                })
+            }
         } catch (error) {
             console.log(error)
         }

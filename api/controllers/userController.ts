@@ -1,5 +1,5 @@
-import User from "../models/userModel"
 import bcrypt from "bcryptjs"
+import User from "../models/userModel"
 import generateTokenAndSetCookie from "../utils/helpers/generateTokenAndCookie"
 
 //REGISTER USER
@@ -9,7 +9,7 @@ const signUpUser = async (req: any, res: any) => {
         const user: any = await User.findOne({ $or: [{ email }, { username }] })
 
         if (user) {
-            return res.status(409).json({ message: "User already exists!" })
+            return res.status(409).json({ error: "User already exists!" })
         }
 
         // hash user password
@@ -36,11 +36,11 @@ const signUpUser = async (req: any, res: any) => {
                 username: newUser.username
             })
         } else {
-            return res.status(400).json({ message: "Invalid User data!" })
+            return res.status(400).json({ error: "Invalid User data!" })
         }
 
     } catch (err: any) {
-        res.status(500).json({ message: err.message })
+        res.status(500).json({ error: err.message })
         console.log("Error in SignUp user: ", err.message)
     }
 }
@@ -56,7 +56,7 @@ const logInUser = async (req: any, res: any) => {
 
         const isPasswordCorrect: any = await bcrypt.compare(password, user?.password || "")
 
-        if (!user || !isPasswordCorrect) return res.status(400).json({ message: "Invalid Username or Password!" })
+        if (!user || !isPasswordCorrect) return res.status(400).json({ error: "Invalid Username or Password!" })
 
         generateTokenAndSetCookie(user._id, res)  // generate token and set cookie to response
 
@@ -68,7 +68,7 @@ const logInUser = async (req: any, res: any) => {
         })
 
     } catch (err: any) {
-        res.status(500).json({ message: err.message })
+        res.status(500).json({ error: err.message })
         console.log("Error on logInUser: ", err.message)
     }
 }
@@ -79,7 +79,7 @@ const logOutUser = (req: any, res: any) => {
         res.cookie('jwt', "", { maxAge: 1 })
         res.status(200).json({ message: "User logged out successfully!" })
     } catch (err: any) {
-        res.status(500).json({ message: err.message })
+        res.status(500).json({ error: err.message })
         console.log("Error on LogOut: ", err.message)
     }
 }
@@ -91,9 +91,9 @@ const followUnFollowUser = async (req: any, res: any) => {
         const userToModify = await User.findById(id)  // user to modify (either follow or unfollow)
         const currentUser = await User.findById(req.user._id)
 
-        if (id === req.user._id.toString()) return res.status(400).json({ message: "You can't follow/unfollow yourself!" })
+        if (id === req.user._id.toString()) return res.status(400).json({ error: "You can't follow/unfollow yourself!" })
 
-        if (!userToModify || !currentUser) return res.status(400).json({ message: "User Not Found!" })
+        if (!userToModify || !currentUser) return res.status(400).json({ error: "User Not Found!" })
 
         //check if the logged-in User is following the user
         const isFollowing = currentUser.following.includes(id)
@@ -119,7 +119,7 @@ const followUnFollowUser = async (req: any, res: any) => {
         }
 
     } catch (err: any) {
-        res.status(500).json({ message: err.message })
+        res.status(500).json({ error: err.message })
         console.log("Error on Follow/UnFollow User: ", err.message)
     }
 }
@@ -132,7 +132,7 @@ const updateUser = async (req: any, res: any) => {
     try {
         let user = await User.findById(userId)
 
-        if (!user) return res.status(400).json({ message: "User not found!" })
+        if (!user) return res.status(400).json({ error: "User not found!" })
 
         if (password) {
             const salt = await bcrypt.genSalt(10)
@@ -151,7 +151,7 @@ const updateUser = async (req: any, res: any) => {
 
         res.status(200).json({ message: "Profile updated successfully!", user: updatedUser })
     } catch (err: any) {
-        res.status(500).json({ message: err.message })
+        res.status(500).json({ error: err.message })
         console.log("Error on Update User: ", err.message)
     }
 }
@@ -162,13 +162,13 @@ const getProfile = async (req: any, res: any) => {
 
     try {
         const user = await User.findOne({ username }).select('-password').select('-updatedAt')
-        if (!user) return res.status(400).json({ message: "User not found!" })
+        if (!user) return res.status(400).json({ error: "User not found!" })
 
         res.status(200).json(user)
     } catch (err: any) {
-        res.status(500).json({ message: err.message })
+        res.status(500).json({ error: err.message })
         console.log("Error on getProfile: ", err.message)
     }
 }
 
-export { signUpUser, logInUser, logOutUser, followUnFollowUser, updateUser, getProfile }
+export { followUnFollowUser, getProfile, logInUser, logOutUser, signUpUser, updateUser }
