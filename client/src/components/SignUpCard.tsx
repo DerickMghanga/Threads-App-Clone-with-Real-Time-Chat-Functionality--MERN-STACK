@@ -46,16 +46,21 @@ export default function SignupCard() {
                 body: JSON.stringify(inputs)
             })
             const data = await res.json()
-            console.log(data)
+            //console.log(data)
 
             if (data.error) {
                 toast({
                     title: "Error",
                     description: data.error,
-                    duration: 3000,
+                    status: 'error',
+                    duration: 2000,
                     isClosable: true
                 })
+                return
             }
+
+            localStorage.setItem('user-threads', JSON.stringify(data))
+
         } catch (error) {
             console.log(error)
         }
