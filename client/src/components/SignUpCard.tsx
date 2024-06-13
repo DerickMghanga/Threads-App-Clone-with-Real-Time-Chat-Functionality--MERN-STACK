@@ -35,7 +35,6 @@ export default function SignupCard() {
 
     const toast = useToast()
 
-
     const handleSignUp = async () => {
         try {
             const res = await fetch('/api/users/signup', {
